@@ -7,12 +7,16 @@ import {
 import { ConfigService } from '@nestjs/config';
 import helmet from 'helmet';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { JwtAuthGuard } from './utils/jwt-auth.guard';
+
+console.log('ALL ENV', process.env);
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(),
   );
+
   const configService = app.get(ConfigService);
   const nodeEnv = configService.get<string>('ENVIRONMENT') || 'development';
 
