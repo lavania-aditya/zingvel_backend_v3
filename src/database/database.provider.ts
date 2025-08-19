@@ -7,7 +7,6 @@ export const DatabaseProvider = MongooseModule.forRootAsync({
     const uri = config.get<string>('MONGODB_URI');
     const dbName = config.get<string>('MONGODB_DATABASE');
     const env = config.get<string>('ENVIRONMENT');
-    console.log('[DB CONFIG]', { uri, dbName, env });
     return {
       uri,
       dbName,

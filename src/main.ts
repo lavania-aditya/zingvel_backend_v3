@@ -7,9 +7,6 @@ import {
 import { ConfigService } from '@nestjs/config';
 import helmet from 'helmet';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { JwtAuthGuard } from './utils/jwt-auth.guard';
-
-console.log('ALL ENV', process.env);
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -47,7 +44,7 @@ async function bootstrap() {
   // Port
   const port = configService.get<number>('PORT') || 3434;
   await app.listen(port, '0.0.0.0');
-  console.log(`Server running on http://localhost:${port}`);
-  console.log(`Swagger docs at http://localhost:${port}/swagger`);
+  console.log(`Server running on -> http://localhost:${port}`);
+  console.log(`Swagger docs at -> http://localhost:${port}/swagger`);
 }
 bootstrap();
