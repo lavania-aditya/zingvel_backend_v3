@@ -1,24 +1,20 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Message91Service } from '../../services/message91.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import {
-  User,
-  UserDocument,
-  Visitor,
-  VisitorDocument,
-  Partner,
-  PartnerDocument,
-  CmsUser,
-  CmsUserDocument,
-} from './accounts.schemas';
+import { User, UserDocument } from '../users/users.schemas';
+import { Visitors, VisitorsDocument } from '../visitors/visitors.schema';
+import { CmsUser, CmsUserDocument } from '../cmsUsers/cmsUser.schema';
+import { Partners, PartnersDocument } from '../partners/partners.schema';
 
 @Injectable()
 export class AccountsService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
-    @InjectModel(Visitor.name) private visitorModel: Model<VisitorDocument>,
-    @InjectModel(Partner.name) private partnerModel: Model<PartnerDocument>,
+    @InjectModel(Visitors.name) private visitorModel: Model<VisitorsDocument>,
+    @InjectModel(Partners.name) private partnerModel: Model<PartnersDocument>,
     @InjectModel(CmsUser.name) private cmsUserModel: Model<CmsUserDocument>,
+    private readonly message91Service: Message91Service,
   ) {}
 
   async getById(type: string, id: string) {
@@ -43,6 +39,7 @@ export class AccountsService {
   }
 
   async getAccountByToken(tokenPayload: { sub: string; type: string }) {
+    console.log(tokenPayload);
     const { sub, type } = tokenPayload;
     const model = this.getModelByType(type);
     const account = await model.findById(sub).lean();

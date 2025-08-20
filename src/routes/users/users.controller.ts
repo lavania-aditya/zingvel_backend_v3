@@ -8,9 +8,8 @@ import {
   Body,
   Query,
   Req,
-  UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth, ApiQuery, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiQuery, ApiBody } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import {
   PatchUserDto,
@@ -18,71 +17,58 @@ import {
   VerifyOtpDto,
   GoogleSignInDto,
 } from './dto/user.dtos';
+import { Roles } from 'src/utils/auth.util';
+import { Public } from 'src/utils/public.decorator';
 
 @ApiTags('users')
 @Controller('users')
-// @UseGuards(RoleGuard) // Placeholder for role-based guard
-// @ApiBearerAuth() // Uncomment when JWT is enabled
 export class UsersController {
   constructor(private readonly svc: UsersService) {}
 
   @Get(':id')
-  // @Roles('user')
+  @Roles('user', 'cms-user')
   getUserById(@Param('id') id: string) {
     return this.svc.getUserById(id);
   }
 
   @Delete(':id')
-  // @Roles('user')
+  @Roles('user', 'cms-user')
   deleteUserById(@Param('id') id: string) {
     return this.svc.deleteUserById(id);
   }
 
   @Patch(':id')
-  // @Roles('user')
+  @Roles('user', 'cms-user')
   @ApiBody({ type: PatchUserDto })
   patchUserById(@Param('id') id: string, @Body() dto: PatchUserDto) {
     return this.svc.patchUserById(id, dto);
   }
 
   @Post('send-otp')
-  // @Roles('all')
+  @Public()
   @ApiBody({ type: SendOtpDto })
   sendOtp(@Body() dto: SendOtpDto) {
     return this.svc.sendOtp(dto);
   }
 
   @Post('verify-otp')
-  // @Roles('all')
+  @Public()
   @ApiBody({ type: VerifyOtpDto })
-  verifyOtp(@Body() dto: VerifyOtpDto) {
-    return this.svc.verifyOtp(dto);
-  }
-
-  @Get('username')
-  // @Roles('user')
-  @ApiQuery({ name: 'username', required: true })
-  getUserByUsername(@Query('username') username: string) {
-    return this.svc.getUserByUsername(username);
+  verifyOtp(@Body() dto: VerifyOtpDto, @Req() req: any) {
+    return this.svc.verifyOtpAndPromoteVisitor(dto, req.user);
   }
 
   @Get('check-username-availaible')
-  // @Roles('user')
+  @Roles('user')
   @ApiQuery({ name: 'username', required: true })
   checkUsernameAvailable(@Query('username') username: string) {
     return this.svc.checkUsernameAvailable(username);
   }
 
   @Post('sign-in-google')
-  // @Roles('all')
+  @Public()
   @ApiBody({ type: GoogleSignInDto })
   signInGoogle(@Body() dto: GoogleSignInDto) {
     return this.svc.signInGoogle(dto);
-  }
-
-  @Get('user-from-token')
-  // @Roles('user')
-  getUserFromToken(@Req() req: any) {
-    return this.svc.getUserFromToken(req);
   }
 }
