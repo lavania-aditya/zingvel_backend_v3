@@ -38,6 +38,41 @@ npm run dev
 - Runs on: http://localhost:3434
 - Swagger docs: http://localhost:3434/swagger
 
+### Useful Commands
+
+#### Check MongoDB TTL Index for Visitors Collection
+To verify that the TTL index (auto-delete after 7 days) is set on the visitors collection, run this in the MongoDB shell:
+
+```bash
+mongo <your-db-uri>
+use zingvel
+// List all indexes for the visitors collection
+ db.visitors.getIndexes()
+```
+You should see an index with `expireAfterSeconds: 604800` (7 days).
+
+#### Other Common Commands
+- **Start in watch mode:**
+  ```bash
+  npm run start:dev
+  ```
+- **Start in production mode:**
+  ```bash
+  npm run start:prod
+  ```
+- **Run unit tests:**
+  ```bash
+  npm run test
+  ```
+- **Run e2e tests:**
+  ```bash
+  npm run test:e2e
+  ```
+- **Check test coverage:**
+  ```bash
+  npm run test:cov
+  ```
+
 ### Production
 ```bash
 npm run build:prod
